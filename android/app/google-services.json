@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "1032829149552",
+    "project_id": "apifatch1",
+    "storage_bucket": "apifatch1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032829149552:android:746701941777686ee4efb5",
+        "android_client_info": {
+          "package_name": "com.Skillzupp.apifatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW7Yo9YCGi1KUE0jC54i0ZZIJncHTNByQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032829149552:android:772d83ad54c1d873e4efb5",
+        "android_client_info": {
+          "package_name": "com.example.api123"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW7Yo9YCGi1KUE0jC54i0ZZIJncHTNByQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032829149552:android:4d44f7b1b3841e48e4efb5",
+        "android_client_info": {
+          "package_name": "com.example.audio_testing"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW7Yo9YCGi1KUE0jC54i0ZZIJncHTNByQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
