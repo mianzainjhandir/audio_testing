@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'mp3_list.dart';
 import 'mp3_uploader.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -25,7 +24,7 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "🎵 MP3 Studio",
+                  "\uD83C\uDFB5 MP3 Studio",
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 60),

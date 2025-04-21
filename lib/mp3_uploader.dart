@@ -1,9 +1,11 @@
+
+
 import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Mp3UploaderScreen extends StatefulWidget {
   @override
@@ -12,39 +14,49 @@ class Mp3UploaderScreen extends StatefulWidget {
 
 class _Mp3UploaderScreenState extends State<Mp3UploaderScreen> {
   bool isUploading = false;
+  final TextEditingController songName = TextEditingController();
+  final TextEditingController artistName = TextEditingController();
 
   Future<void> pickAndUpload() async {
+    if (songName.text.isEmpty || artistName.text.isEmpty) {
+      Get.snackbar("Missing Fields", "Please enter song and artist name");
+      return;
+    }
+
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['mp3'],
       withData: true,
     );
 
-    if (result != null) {
-      Uint8List? fileBytes = result.files.single.bytes;
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    if (result == null || result.files.single.bytes == null) {
+      Get.snackbar("Cancelled", "No MP3 selected");
+      return;
+    }
 
-      setState(() => isUploading = true);
+    Uint8List fileBytes = result.files.single.bytes!;
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
 
-      try {
-        UploadTask uploadTask = FirebaseStorage.instance
-            .ref('audios/$fileName.mp3')
-            .putData(fileBytes!);
+    setState(() => isUploading = true);
 
-        TaskSnapshot snap = await uploadTask;
-        String url = await snap.ref.getDownloadURL();
+    try {
+      final mp3Snap = await FirebaseStorage.instance
+          .ref('audios/$fileName.mp3')
+          .putData(fileBytes);
+      final mp3Url = await mp3Snap.ref.getDownloadURL();
 
-        await FirebaseFirestore.instance.collection('audios').add({
-          'url': url,
-          'uploadedAt': Timestamp.now(),
-        });
+      await FirebaseFirestore.instance.collection('audios').add({
+        'url': mp3Url,
+        'songName': songName.text.trim(),
+        'artistName': artistName.text.trim(),
+        'uploadedAt': Timestamp.now(),
+      });
 
-        Get.snackbar("Uploaded", "MP3 uploaded successfully!");
-      } catch (e) {
-        Get.snackbar("Error", "Upload failed.");
-      } finally {
-        setState(() => isUploading = false);
-      }
+      Get.snackbar("Success", "MP3 uploaded successfully!");
+    } catch (e) {
+      Get.snackbar("Upload Failed", "Reason: $e");
+    } finally {
+      setState(() => isUploading = false);
     }
   }
 
@@ -53,28 +65,52 @@ class _Mp3UploaderScreenState extends State<Mp3UploaderScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(title: Text("Upload MP3")),
-      body: Center(
-        child: isUploading
-            ? Column(
+      body: isUploading
+          ? Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(color: Colors.deepPurpleAccent),
             SizedBox(height: 20),
-            Text("Uploading...", style: TextStyle(fontSize: 16)),
+            Text("Uploading...", style: TextStyle(color: Colors.white)),
           ],
-        )
-            : Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: ElevatedButton.icon(
-            icon: Icon(Icons.cloud_upload_outlined),
-            label: Text("Select & Upload MP3", style: TextStyle(fontSize: 18)),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepPurpleAccent,
-              minimumSize: Size(double.infinity, 50),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      )
+          : SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32),
+        child: Column(
+          children: [
+            TextField(
+              controller: songName,
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: "Song Name",
+                hintStyle: TextStyle(color: Colors.white60),
+                border: UnderlineInputBorder(),
+              ),
             ),
-            onPressed: pickAndUpload,
-          ),
+            SizedBox(height: 12),
+            TextField(
+              controller: artistName,
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: "Artist Name",
+                hintStyle: TextStyle(color: Colors.white60),
+                border: UnderlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 24),
+            ElevatedButton.icon(
+              icon: Icon(Icons.upload),
+              label: Text("Upload MP3"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurpleAccent,
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: pickAndUpload,
+            ),
+          ],
         ),
       ),
     );
