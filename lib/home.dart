@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             baseColor: Colors.deepPurple, // Base color for particles
             spawnOpacity: 0.1,
             opacityChangeRate: 0.25,
-            minOpacity: 0.1,
+            minOpacity: 0.2,
             maxOpacity: 0.7,
             particleCount: 50, // Adjust particle count
             spawnMaxRadius: 15.0,
