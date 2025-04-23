@@ -25,11 +25,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             spawnOpacity: 0.1,
             opacityChangeRate: 0.25,
             minOpacity: 0.1,
-            maxOpacity: 0.4,
+            maxOpacity: 0.7,
             particleCount: 50, // Adjust particle count
             spawnMaxRadius: 15.0,
             spawnMinRadius: 10.0,
-            spawnMaxSpeed: 50.0,
+            spawnMaxSpeed: 40.0,
             spawnMinSpeed: 10.0,
           ),
           paint: Paint()..style=PaintingStyle.fill..strokeWidth=1.0, // Customize particle paint if needed
