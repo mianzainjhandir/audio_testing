@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:animated_background/animated_background.dart'; // Import animated_background
-import 'package:animate_do/animate_do.dart'; // Import animate_do
+import 'package:animated_background/animated_background.dart';
+import 'package:animate_do/animate_do.dart';
 import 'mp3_list.dart';
 import 'mp3_uploader.dart';
 
-// Make it stateful to use TickerProvider for AnimatedBackground
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -17,11 +16,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Use AnimatedBackground instead of Container with gradient
+
       body: AnimatedBackground(
-        behaviour: RandomParticleBehaviour( // Use particle effect
+        behaviour: RandomParticleBehaviour(
           options: const ParticleOptions(
-            baseColor: Colors.deepPurple, // Base color for particles
+            baseColor: Colors.deepPurple,
             spawnOpacity: 0.1,
             opacityChangeRate: 0.25,
             minOpacity: 0.2,

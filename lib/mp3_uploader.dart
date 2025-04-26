@@ -204,7 +204,7 @@ class Mp3UploaderScreen extends StatelessWidget {
                             errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image, color: Colors.red, size: 50),
                           ),
                         ),
-                      );
+                      );//
                     } catch (e) {
                       // Handle potential decoding errors
                       return Center(child: Text('Invalid image data', style: TextStyle(color: Colors.red)));
