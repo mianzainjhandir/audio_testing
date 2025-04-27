@@ -44,13 +44,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBzY1HmBqu6re-hSC7Ob440DRRIUmjqJvM',
-    appId: '1:1032829149552:web:5187d4d047a7fdfae4efb5',
+    apiKey: 'AIzaSyCFopEM1c8i3iVeqW9SWFhOykz9sLjmzPA',
+    appId: '1:1032829149552:web:4fdb894b71121c37e4efb5',
     messagingSenderId: '1032829149552',
     projectId: 'apifatch1',
     authDomain: 'apifatch1.firebaseapp.com',
     storageBucket: 'apifatch1.appspot.com',
-    measurementId: 'G-QV8ETWCFWX',
+    measurementId: 'G-6RF0KBGSV7',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -79,4 +79,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'apifatch1.appspot.com',
     measurementId: 'G-6RF0KBGSV7',
   );
+
 }
