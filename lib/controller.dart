@@ -1,9 +1,8 @@
 
-import 'package:get/get.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:get/get.dart';
 import 'dart:math';
-
 class Mp3Controller extends GetxController {
   final audioPlayer = AudioPlayer();
   final playingIndex = RxnInt();
@@ -11,6 +10,10 @@ class Mp3Controller extends GetxController {
   final position = Rx<Duration>(Duration.zero);
   final volume = 1.0.obs;
   final isShuffling = false.obs;
+  final bass = 0.5.obs;
+  final mid = 0.5.obs;
+  final treble = 0.5.obs;
+  final timerDuration = 5.obs;
   final List<Map<String, dynamic>> allTracks = [];
   final RxList<Map<String, dynamic>> currentTrackList = <Map<String, dynamic>>[].obs;
 
@@ -64,39 +67,43 @@ class Mp3Controller extends GetxController {
     await playAudio(nextTrack['url'], nextIndex);
   }
 
-  Future<void> playPrevious() async {
-    if (currentTrackList.isEmpty || playingIndex.value == null) return;
-    int prevIndex = (playingIndex.value! - 1 + currentTrackList.length) % currentTrackList.length;
-    final prevTrack = currentTrackList[prevIndex];
-    await playAudio(prevTrack['url'], prevIndex);
+  void updateBass(double value) {
+    bass.value = value;
+    // Implement equalizer filter adjustments
   }
 
-  void seekTo(Duration position) {
-    audioPlayer.seek(position);
+  void updateMid(double value) {
+    mid.value = value;
+    // Implement equalizer filter adjustments
+  }
+
+  void updateTreble(double value) {
+    treble.value = value;
+    // Implement equalizer filter adjustments
+  }
+
+  void updateSleepTimer(int value) {
+    timerDuration.value = value;
+    // Implement sleep timer functionality
   }
 
   void toggleShuffle() {
     isShuffling.value = !isShuffling.value;
     updateTrackList();
-    if (playingIndex.value != null) {
-      final currentTrack = currentTrackList[playingIndex.value!];
-      int newIndex = currentTrackList.indexOf(currentTrack);
-      playingIndex.value = newIndex;
-    }
   }
 
   @override
   void onInit() {
     super.onInit();
-    audioPlayer.durationStream.listen((d) {
-      if (d != null) duration.value = d;
-    });
     audioPlayer.positionStream.listen((p) {
       position.value = p;
     });
+    audioPlayer.durationStream.listen((d) {
+      if (d != null) duration.value = d;
+    });
     audioPlayer.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
-        playNext();
+        playNext(); // Automatically play next song when current one finishes
       }
     });
   }
