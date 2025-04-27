@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
-import 'dart:math';
+import 'dart:math';//
 class Mp3Controller extends GetxController {
   final audioPlayer = AudioPlayer();
   final playingIndex = RxnInt();
