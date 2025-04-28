@@ -28,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             particleCount: 50, // Adjust particle count
             spawnMaxRadius: 15.0,
             spawnMinRadius: 10.0,
-            spawnMaxSpeed: 40.0,
-            spawnMinSpeed: 10.0,
+            spawnMaxSpeed: 90.0,
+            spawnMinSpeed: 70.0,
           ),
           paint: Paint()..style=PaintingStyle.fill..strokeWidth=1.0, // Customize particle paint if needed
         ),

@@ -1,8 +1,10 @@
-
+// controller.dart (UPDATED)
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:get/get.dart';
-import 'dart:math';//
+import 'package:flutter_fft/flutter_fft.dart'; // << Add this import
+import 'dart:math';
+
 class Mp3Controller extends GetxController {
   final audioPlayer = AudioPlayer();
   final playingIndex = RxnInt();
@@ -10,12 +12,18 @@ class Mp3Controller extends GetxController {
   final position = Rx<Duration>(Duration.zero);
   final volume = 1.0.obs;
   final isShuffling = false.obs;
-  final bass = 0.5.obs;
+  final bass = 0.10.obs;
   final mid = 0.5.obs;
   final treble = 0.5.obs;
   final timerDuration = 5.obs;
   final List<Map<String, dynamic>> allTracks = [];
   final RxList<Map<String, dynamic>> currentTrackList = <Map<String, dynamic>>[].obs;
+
+  // 🔥 Flutter FFT (Pitch detection)
+  final FlutterFft flutterFft = FlutterFft();
+  final RxBool isRecording = false.obs;
+  final RxDouble detectedFrequency = 0.0.obs;
+  final RxString detectedNote = ''.obs;
 
   Stream<QuerySnapshot> get audioStream => FirebaseFirestore.instance
       .collection('audios')
@@ -69,27 +77,48 @@ class Mp3Controller extends GetxController {
 
   void updateBass(double value) {
     bass.value = value;
-    // Implement equalizer filter adjustments
   }
 
   void updateMid(double value) {
     mid.value = value;
-    // Implement equalizer filter adjustments
   }
 
   void updateTreble(double value) {
     treble.value = value;
-    // Implement equalizer filter adjustments
   }
 
   void updateSleepTimer(int value) {
     timerDuration.value = value;
-    // Implement sleep timer functionality
   }
 
   void toggleShuffle() {
     isShuffling.value = !isShuffling.value;
     updateTrackList();
+  }
+
+  // 🔥 Start FFT listening
+  Future<void> startListening() async {
+    try {
+      await flutterFft.startRecorder();
+      isRecording.value = true;
+
+      flutterFft.onRecorderStateChanged.listen((data) {
+        detectedFrequency.value = (data[1] as double?) ?? 0.0;
+        detectedNote.value = (data[2] as String?) ?? '';
+      });
+
+    } catch (e) {
+      Get.snackbar("Error", "Could not start FFT recorder");
+    }
+  }
+
+  Future<void> stopListening() async {
+    try {
+      await flutterFft.stopRecorder();
+      isRecording.value = false;
+    } catch (e) {
+      Get.snackbar("Error", "Could not stop FFT recorder");
+    }
   }
 
   @override
@@ -103,7 +132,7 @@ class Mp3Controller extends GetxController {
     });
     audioPlayer.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
-        playNext(); // Automatically play next song when current one finishes
+        playNext();
       }
     });
   }
@@ -111,6 +140,7 @@ class Mp3Controller extends GetxController {
   @override
   void onClose() {
     audioPlayer.dispose();
+    flutterFft.stopRecorder();
     super.onClose();
   }
 }

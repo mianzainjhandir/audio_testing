@@ -46,6 +46,8 @@ dependencies:
   animated_background: ^2.0.0
   animate_do: ^4.2.0
   audio_session: ^0.2.1
+  just_audio_background:
+  flutter_fft:
 
 dev_dependencies:
   flutter_test:

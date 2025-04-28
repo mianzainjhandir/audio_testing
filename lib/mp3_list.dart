@@ -1,8 +1,8 @@
-import 'package:animated_background/animated_background.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
+import 'package:animated_background/animated_background.dart';
 import 'controller.dart';
-import 'package:get/get.dart';//
+
 class Mp3ListScreen extends StatefulWidget {
   const Mp3ListScreen({Key? key}) : super(key: key);
 
@@ -10,9 +10,11 @@ class Mp3ListScreen extends StatefulWidget {
   State<Mp3ListScreen> createState() => _Mp3ListScreenState();
 }
 
-class _Mp3ListScreenState extends State<Mp3ListScreen> with TickerProviderStateMixin {
+class _Mp3ListScreenState extends State<Mp3ListScreen>
+    with TickerProviderStateMixin {
   final Mp3Controller controller = Get.put(Mp3Controller());
 
+  // Format time (Duration) to show in "mm:ss" format
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -45,14 +47,21 @@ class _Mp3ListScreenState extends State<Mp3ListScreen> with TickerProviderStateM
             children: [
               AppBar(
                 backgroundColor: Colors.grey[900],
-                title: Text("🎧 MP3 Studio", style: TextStyle(color: Colors.white)),
-                iconTheme: IconThemeData(color: Colors.white),
+                title: const Text(
+                  "🎧 MP3 Studio",
+                  style: TextStyle(color: Colors.white),
+                ),
+                iconTheme: const IconThemeData(color: Colors.white),
                 actions: [
                   IconButton(
-                    icon: Obx(() => Icon(
-                      controller.isShuffling.value ? Icons.shuffle_rounded : Icons.shuffle,
-                      color: Colors.white,
-                    )),
+                    icon: Obx(
+                      () => Icon(
+                        controller.isShuffling.value
+                            ? Icons.shuffle_rounded
+                            : Icons.shuffle,
+                        color: Colors.white,
+                      ),
+                    ),
                     onPressed: controller.toggleShuffle,
                   ),
                 ],
@@ -61,12 +70,13 @@ class _Mp3ListScreenState extends State<Mp3ListScreen> with TickerProviderStateM
                 child: StreamBuilder(
                   stream: controller.audioStream,
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                    if (!snapshot.hasData)
+                      return const Center(child: CircularProgressIndicator());
 
                     final docs = snapshot.data!.docs;
 
                     return ListView.builder(
-                      padding: EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       itemCount: docs.length,
                       itemBuilder: (context, index) {
                         final data = docs[index].data() as Map<String, dynamic>;
@@ -76,47 +86,98 @@ class _Mp3ListScreenState extends State<Mp3ListScreen> with TickerProviderStateM
                         final artist = data['artistName'] ?? "Unknown Artist";
 
                         return Obx(() {
-                          final isPlaying = controller.playingIndex.value == index;
+                          final isPlaying =
+                              controller.playingIndex.value == index;
 
                           return Card(
-                            color: isPlaying ? Colors.deepPurple.withAlpha(40) : Colors.grey.shade900,
+                            color:
+                                isPlaying
+                                    ? Colors.deepPurple.withAlpha(40)
+                                    : Colors.grey.shade900,
                             elevation: isPlaying ? 6 : 4,
-                            shadowColor: isPlaying ? Colors.deepPurpleAccent.withAlpha(50) : Colors.black.withOpacity(0.5),
+                            shadowColor:
+                                isPlaying
+                                    ? Colors.deepPurpleAccent.withAlpha(50)
+                                    : Colors.black.withOpacity(0.5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
-                              side: isPlaying ? BorderSide(color: Colors.deepPurpleAccent, width: 1) : BorderSide.none,
+                              side:
+                                  isPlaying
+                                      ? const BorderSide(
+                                        color: Colors.deepPurpleAccent,
+                                        width: 1,
+                                      )
+                                      : BorderSide.none,
                             ),
-                            margin: EdgeInsets.symmetric(vertical: 10),
+                            margin: const EdgeInsets.symmetric(vertical: 10),
                             child: Column(
                               children: [
                                 ListTile(
-                                  contentPadding: EdgeInsets.all(12),
+                                  contentPadding: const EdgeInsets.all(12),
                                   leading: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child: Container(
                                       width: 50,
                                       height: 50,
                                       color: Colors.grey.shade800,
-                                      child: img.isNotEmpty
-                                          ? Image.network(
-                                        img,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => Icon(Icons.broken_image_outlined, color: Colors.white54),
-                                        loadingBuilder: (context, child, loadingProgress) {
-                                          if (loadingProgress == null) return child;
-                                          return Center(child: CircularProgressIndicator(strokeWidth: 2, color: Colors.deepPurpleAccent));
-                                        },
-                                      )
-                                          : Icon(Icons.music_note_rounded, size: 30, color: Colors.white70),
+                                      child:
+                                          img.isNotEmpty
+                                              ? Image.network(
+                                                img,
+                                                fit: BoxFit.cover,
+                                                errorBuilder:
+                                                    (_, __, ___) => const Icon(
+                                                      Icons
+                                                          .broken_image_outlined,
+                                                      color: Colors.white54,
+                                                    ),
+                                                loadingBuilder: (
+                                                  context,
+                                                  child,
+                                                  loadingProgress,
+                                                ) {
+                                                  if (loadingProgress == null)
+                                                    return child;
+                                                  return const Center(
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color:
+                                                          Colors
+                                                              .deepPurpleAccent,
+                                                    ),
+                                                  );
+                                                },
+                                              )
+                                              : const Icon(
+                                                Icons.music_note_rounded,
+                                                size: 30,
+                                                color: Colors.white70,
+                                              ),
                                     ),
                                   ),
-                                  title: Text(title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                                  subtitle: Text(artist, style: TextStyle(color: Colors.white60)),
+                                  title: Text(
+                                    title,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    artist,
+                                    style: const TextStyle(
+                                      color: Colors.white60,
+                                    ),
+                                  ),
                                   trailing: IconButton(
                                     icon: Icon(
-                                      isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
+                                      isPlaying
+                                          ? Icons.pause_circle_filled
+                                          : Icons.play_circle_fill,
                                       size: 42,
-                                      color: isPlaying ? Colors.greenAccent.shade400 : Colors.deepPurpleAccent,
+                                      color:
+                                          isPlaying
+                                              ? Colors.greenAccent.shade400
+                                              : Colors.deepPurpleAccent,
                                     ),
                                     onPressed: () {
                                       isPlaying
@@ -132,116 +193,214 @@ class _Mp3ListScreenState extends State<Mp3ListScreen> with TickerProviderStateM
                                     return Column(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
                                           child: SliderTheme(
-                                            data: SliderTheme.of(context).copyWith(
+                                            data: SliderTheme.of(
+                                              context,
+                                            ).copyWith(
                                               trackHeight: 3,
-                                              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7),
-                                              activeTrackColor: Colors.redAccent,
-                                              inactiveTrackColor: Colors.grey.shade700,
+                                              thumbShape:
+                                                  const RoundSliderThumbShape(
+                                                    enabledThumbRadius: 7,
+                                                  ),
+                                              activeTrackColor:
+                                                  Colors.redAccent,
+                                              inactiveTrackColor:
+                                                  Colors.grey.shade700,
                                               thumbColor: Colors.redAccent,
                                             ),
                                             child: Slider(
                                               min: 0,
-                                              max: dur.inMilliseconds.toDouble(),
-                                              value: pos.inMilliseconds.clamp(0, dur.inMilliseconds).toDouble(),
+                                              max:
+                                                  dur.inMilliseconds.toDouble(),
+                                              value:
+                                                  pos.inMilliseconds
+                                                      .clamp(
+                                                        0,
+                                                        dur.inMilliseconds,
+                                                      )
+                                                      .toDouble(),
                                               onChanged: (value) {
-                                                controller.audioPlayer.seek(Duration(milliseconds: value.toInt()));
+                                                controller.audioPlayer.seek(
+                                                  Duration(
+                                                    milliseconds: value.toInt(),
+                                                  ),
+                                                );
                                               },
                                             ),
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16.0,
+                                          ),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(_formatDuration(pos), style: TextStyle(color: Colors.white70)),
-                                              Text(_formatDuration(dur), style: TextStyle(color: Colors.white70)),
+                                              Text(
+                                                _formatDuration(pos),
+                                                style: const TextStyle(
+                                                  color: Colors.white70,
+                                                ),
+                                              ),
+                                              Text(
+                                                _formatDuration(dur),
+                                                style: const TextStyle(
+                                                  color: Colors.white70,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
-                                        // --- Buttons for Stop --- (Next button removed)
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 12),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               IconButton(
-                                                icon: Icon(Icons.stop_rounded, color: Colors.white70, size: 40),
+                                                icon: const Icon(
+                                                  Icons.stop_rounded,
+                                                  color: Colors.white70,
+                                                  size: 40,
+                                                ),
                                                 onPressed: controller.stopAudio,
                                               ),
                                             ],
                                           ),
                                         ),
-                                        // --- New Features: Equalizer and Sleep Timer ---
+                                        // Equalizer Controls
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 12),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
                                           child: Column(
                                             children: [
-                                              // Equalizer
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
-                                                  Text('Bass', style: TextStyle(color: Colors.white70)),
+                                                  const Text(
+                                                    'Bass',
+                                                    style: TextStyle(
+                                                      color: Colors.white70,
+                                                    ),
+                                                  ),
                                                   Slider(
                                                     min: 0,
                                                     max: 1,
-                                                    value: controller.bass.value,
-                                                    onChanged: controller.updateBass,
-                                                    activeColor: Colors.greenAccent,
-                                                    inactiveColor: Colors.white30,
+                                                    value:
+                                                        controller.bass.value,
+                                                    onChanged:
+                                                        controller.updateBass,
+                                                    activeColor:
+                                                        Colors.greenAccent,
+                                                    inactiveColor:
+                                                        Colors.white30,
                                                   ),
                                                 ],
                                               ),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
-                                                  Text('Mid', style: TextStyle(color: Colors.white70)),
+                                                  const Text(
+                                                    'Mid',
+                                                    style: TextStyle(
+                                                      color: Colors.white70,
+                                                    ),
+                                                  ),
                                                   Slider(
                                                     min: 0,
                                                     max: 1,
                                                     value: controller.mid.value,
-                                                    onChanged: controller.updateMid,
-                                                    activeColor: Colors.greenAccent,
-                                                    inactiveColor: Colors.white30,
+                                                    onChanged:
+                                                        controller.updateMid,
+                                                    activeColor:
+                                                        Colors.greenAccent,
+                                                    inactiveColor:
+                                                        Colors.white30,
                                                   ),
                                                 ],
                                               ),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
-                                                  Text('Treble', style: TextStyle(color: Colors.white70)),
+                                                  const Text(
+                                                    'Treble',
+                                                    style: TextStyle(
+                                                      color: Colors.white70,
+                                                    ),
+                                                  ),
                                                   Slider(
                                                     min: 0,
                                                     max: 1,
-                                                    value: controller.treble.value,
-                                                    onChanged: controller.updateTreble,
-                                                    activeColor: Colors.greenAccent,
-                                                    inactiveColor: Colors.white30,
+                                                    value:
+                                                        controller.treble.value,
+                                                    onChanged:
+                                                        controller.updateTreble,
+                                                    activeColor:
+                                                        Colors.greenAccent,
+                                                    inactiveColor:
+                                                        Colors.white30,
                                                   ),
                                                 ],
                                               ),
-                                              // Sleep Timer
+                                              // Sleep Timer Dropdown
                                               Padding(
-                                                padding: const EdgeInsets.only(top: 12),
+                                                padding: const EdgeInsets.only(
+                                                  top: 12,
+                                                ),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
-                                                    Text("Sleep Timer: ", style: TextStyle(color: Colors.white70)),
+                                                    const Text(
+                                                      "Sleep Timer: ",
+                                                      style: TextStyle(
+                                                        color: Colors.white70,
+                                                      ),
+                                                    ),
                                                     DropdownButton<int>(
-                                                      dropdownColor: Colors.black,
-                                                      value: controller.timerDuration.value,
-                                                      items: List.generate(6, (index) {
+                                                      dropdownColor:
+                                                          Colors.black,
+                                                      value:
+                                                          controller
+                                                              .timerDuration
+                                                              .value,
+                                                      items: List.generate(6, (
+                                                        index,
+                                                      ) {
                                                         return DropdownMenuItem(
-                                                          value: (index + 1) * 5,
-                                                          child: Text("${(index + 1) * 5} min", style: TextStyle(color: Colors.white)),
+                                                          value:
+                                                              (index + 1) * 5,
+                                                          child: Text(
+                                                            "${(index + 1) * 5} min",
+                                                            style:
+                                                                const TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .white,
+                                                                ),
+                                                          ),
                                                         );
                                                       }),
-                                                      onChanged: (int? newValue) {
-                                                        controller.updateSleepTimer(newValue!);  // Ensure non-null value
+                                                      onChanged: (
+                                                        int? newValue,
+                                                      ) {
+                                                        if (newValue != null)
+                                                          controller
+                                                              .updateSleepTimer(
+                                                                newValue,
+                                                              );
                                                       },
-                                                    )
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -250,8 +409,8 @@ class _Mp3ListScreenState extends State<Mp3ListScreen> with TickerProviderStateM
                                         ),
                                       ],
                                     );
-                                  })
-                                ]
+                                  }),
+                                ],
                               ],
                             ),
                           );
